@@ -1,6 +1,6 @@
 # ✅ Verification Bot ✅
 
-Verification Bot is a simple and efficient Discord bot that helps keep your server secure by ensuring users verify their email before gaining access. This bot is perfect for any server looking to reduce spam and improve security!
+Verification Bot is a simple and efficient Discord bot that helps keep your server secure by ensuring users verify themselves before gaining access to channels and features. This bot is perfect for any server looking to reduce spam and improve security!
 
 ## 🚀 Features
 

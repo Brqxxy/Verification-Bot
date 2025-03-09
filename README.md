@@ -15,7 +15,7 @@ Verification Bot is a simple and efficient Discord bot that helps keep your serv
 ### Prerequisites
 Before installing, make sure you have:
 * [Node.js](https://nodejs.org/) (v16 or later)
-* [Discord Developer Portal](https://discord.com/developers/applications) Access needed to create a bot
+* [Discord Developer Portal](https://discord.com/developers/applications) access to create a bot
 
 ### 1️⃣ Clone the Repository
 ```sh

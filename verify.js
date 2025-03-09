@@ -2,7 +2,7 @@ const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder
 
 // ===== CONFIGURATION =====
 const BOT_TOKEN = 'BOT_TOKEN';
-const VERIFIED_ROLE_ID = 'ROLE_ID';
+const VERIFIED_ROLE_ID = 'VERIFIED_ROLE_ID';
 const COMMAND = '!setupverify';
 // ========================
 

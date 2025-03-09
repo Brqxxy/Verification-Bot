@@ -8,7 +8,6 @@ Verification Bot is a simple and efficient Discord bot that helps keep your serv
 * 🏷 **Role Assignment** – Grants a specified "Verified" role upon successful verification
 * 📜 **Custom Verification Embed** – Sends a clear and informative verification message
 * ⚙️ **Admin-Only Setup** – The `!setupverify` command ensures only administrators can set up verification
-* 🛑 **Prevents Duplicate Messages** – The bot checks for existing verification messages to keep channels clean
 
 ## 🛠 Setup & Installation
 

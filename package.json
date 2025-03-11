@@ -2,9 +2,9 @@
   "name": "verification-bot",
   "version": "1.0.0",
   "description": "A Discord bot for user verification with role assignment.",
-  "main": "bot.js",
+  "main": "verify.js",
   "scripts": {
-    "start": "node bot.js"
+    "start": "node verify.js"
   },
   "dependencies": {
     "discord.js": "^14.12.1"

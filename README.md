@@ -1,6 +1,4 @@
-# ✅ Verification Bot ✅
-Verification Bot is a simple and efficient Discord bot that helps keep your server secure by ensuring users verify themselves before gaining access to channels and features. This bot is perfect for any server looking to reduce spam and improve security!
-## 🚀 Features
+## 🚀 **Features**
 - **🔐 Secure Verification**: New members are required to verify by clicking a button. Verification is only allowed for accounts that are at least **24 hours old**.
 - **✅ Automated Role Assignment**: Once verified, the bot automatically assigns a **verified role** to the user.
 - **🕒 Cooldown**: Prevents spamming by enforcing a cooldown period between verification attempts.
@@ -11,12 +9,17 @@ Verification Bot is a simple and efficient Discord bot that helps keep your serv
   - **⚠️ Account Age Check**: Users must have an account that is at least 24 hours old to be verified. This helps prevent bots from joining.
   - **🔄 Global Cooldown**: Limits spam and ensures the system is not overwhelmed by too many requests at once.
   - **🔑 Role Hierarchy Check**: Ensures the bot’s role is higher than the "verified" role, preventing permission issues.
-## 🛠 Setup & Installation
-### Prerequisites
+
+---
+
+## 🛠 **Setup & Installation**
+
+### **Prerequisites**
 Before installing, make sure you have:
 * [Node.js](https://nodejs.org/) (v16 or later)
 * [Discord Developer Portal](https://discord.com/developers/applications) Access to create a bot
-### 1️⃣ Clone the Repository
+
+### **1️⃣ Clone the Repository**
 ```sh
 git clone https://github.com/Brqxxy/verification-bot.git
 cd verification-bot

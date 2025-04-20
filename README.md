@@ -35,7 +35,7 @@ npm install
 ### 3️⃣ Set Up Your Bot Token
 1. Create a bot on the Discord Developer Portal
 2. Copy your **bot token**
-3. Create a .env file (this will NOT be included)
+3. Create a **.env** file (this will NOT be included)
 4. Replace the `BOT_TOKEN` variable in your `.env` with your bot token
 ### 4️⃣ Set Your Verified Role
 1. Find the Role ID of the role you want to assign upon verification

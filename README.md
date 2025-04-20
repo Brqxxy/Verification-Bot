@@ -3,14 +3,14 @@
 Welcome to Brqxxys Discord Verification Bot, your go-to bot for ensuring that only verified users can gain access to your Discord server! This bot helps maintain the integrity of your server by verifying that users are human and not bots. It uses a simple verification process based on account age and role management.
 
 ## 🚀 **Features**
-- **🔐 Secure Verification**: New members are required to verify by clicking a button. Verification is only allowed for accounts that are at least **24 hours old**.
+- **🔐 Secure Verification**: New members are required to verify by clicking a button. Verification is only allowed for accounts that are at least **7 days old**.
 - **✅ Automated Role Assignment**: Once verified, the bot automatically assigns a **verified role** to the user.
 - **🕒 Cooldown**: Prevents spamming by enforcing a cooldown period between verification attempts.
 - **🔧 Easy Setup**: Just use the `!setupverify` command to configure the verification system.
 - **📚 Log Actions**: All actions (such as verification success or failure) are logged to a specific channel for easy tracking.
 - **🔒 Security Features**:
 - **🚫 Blocked Roles**: Users with elevated roles (Admin, Moderator, Staff) are automatically excluded from verification, preventing abuse.
-- **⚠️ Account Age Check**: Users must have an account that is at least 24 hours old to be verified. This helps prevent bots from joining.
+- **⚠️ Account Age Check**: Users must have an account that is at least 7 days old to be verified. This helps prevent bots from joining.
 - **🔄 Global Cooldown**: Limits spam and ensures the system is not overwhelmed by too many requests at once.
 - **🔑 Role Hierarchy Check**: Ensures the bot’s role is higher than the "verified" role, preventing permission issues.
 

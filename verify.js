@@ -7,7 +7,7 @@ const {
   ButtonStyle, 
   PermissionsBitField,
   AuditLogEvent,
-  ActivityType // ✅ Included this for presence status
+  ActivityType
 } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
@@ -18,7 +18,7 @@ const VERIFIED_ROLE_ID = process.env.VERIFIED_ROLE_ID;
 const LOG_CHANNEL_ID = process.env.LOG_CHANNEL_ID;
 const COMMAND = '!setupverify';
 const VERIFICATION_COOLDOWN = 60000;
-const MIN_ACCOUNT_AGE = 24 * 60 * 60 * 1000;
+const MIN_ACCOUNT_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 const verificationAttempts = new Map();
 const verifiedUsers = new Map();
@@ -68,7 +68,6 @@ async function logAction(guild, message, color = "#1AAD91") {
 client.once('ready', () => {
   console.log(`Bot is online! Logged in as ${client.user.tag}`);
 
-  // ✅ Set bot status here
   client.user.setPresence({
     activities: [{
       name: 'Brqx Snowboard',
@@ -120,7 +119,7 @@ client.on('messageCreate', async (message) => {
     .setColor("#1AAD91")
     .addFields(
       { name: '**:white_small_square:Welcome!ㅤ**', value: `> **\`⭕ Hello and welcome to ${serverName}! To gain access, you must complete a simple verification to prove you’re not a bot. 🛠️\`**`, inline: false },
-      { name: '**:white_small_square:How do you Verify?**', value: '> **\`⭕ Your account must be at least 24 hours old. Click the button below to complete verification. 🚀\`**', inline: false },
+      { name: '**:white_small_square:How do you Verify?**', value: '> **\`⭕ Your account must be at least 7 days old. Click the button below to complete verification. 🚀\`**', inline: false },
       { name: '**:white_small_square:Verification complete!**', value: `> **\`✅ Once verified, you’ll gain access to the server. Thanks for joining ${serverName}! 📚\`**`, inline: false },
     );
 
@@ -209,9 +208,12 @@ client.on('interactionCreate', async (interaction) => {
 
     const accountAge = now - user.createdTimestamp;
     if (accountAge < MIN_ACCOUNT_AGE) {
-      const hoursLeft = Math.ceil((MIN_ACCOUNT_AGE - accountAge) / (1000 * 60 * 60));
+      const msLeft = MIN_ACCOUNT_AGE - accountAge;
+      const daysLeft = Math.floor(msLeft / (1000 * 60 * 60 * 24));
+      const hoursLeft = Math.ceil((msLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
       return interaction.reply({
-        content: `❌ Your account is too new. Please wait approximately ${hoursLeft} more hours before trying again.`,
+        content: `❌ Your account is too new. Please wait approximately ${daysLeft} day(s) and ${hoursLeft} hour(s) before trying again.`,
         ephemeral: true
       });
     }

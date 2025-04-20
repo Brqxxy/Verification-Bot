@@ -1,4 +1,4 @@
-**🎉 Brqx-Verify - Discord Verification Bot 🎉**
+**🎉 Brqxxys Discord Verification Bot 🎉**
 ---
 Welcome to Brqx-Verify, your go-to bot for ensuring that only verified users can gain access to your Discord server! This bot helps maintain the integrity of your server by verifying that users are human and not bots. It uses a simple verification process based on account age and role management.
 

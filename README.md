@@ -37,9 +37,9 @@ npm install
 2. Copy your **bot token**
 3. Replace the `BOT_TOKEN` variable in your `.env` with your bot token
 ### 4️⃣ Set Your Verified Role
-Find the Role ID of the role you want to assign upon verification
+1. Find the Role ID of the role you want to assign upon verification
 2. Replace `VERIFIED_ROLE_ID` in `.env` with your desired role ID
-Replace `LOG_CHANNEL_ID` in `.env` with your desired channel ID (Optional).
+3. Replace `LOG_CHANNEL_ID` in `.env` with your desired channel ID (Optional).
 ### 5️⃣ Run the Bot
 ```sh
 node verify.js

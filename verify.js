@@ -6,7 +6,8 @@ const {
   ButtonBuilder, 
   ButtonStyle, 
   PermissionsBitField,
-  AuditLogEvent
+  AuditLogEvent,
+  ActivityType // ✅ Included this for presence status
 } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
@@ -49,7 +50,7 @@ const client = new Client({
   ]
 });
 
-async function logAction(guild, message, color = "#ff5e00") {
+async function logAction(guild, message, color = "#1AAD91") {
   if (!LOG_CHANNEL_ID) return;
   
   const logChannel = guild.channels.cache.get(LOG_CHANNEL_ID);
@@ -66,6 +67,15 @@ async function logAction(guild, message, color = "#ff5e00") {
 
 client.once('ready', () => {
   console.log(`Bot is online! Logged in as ${client.user.tag}`);
+
+  // ✅ Set bot status here
+  client.user.setPresence({
+    activities: [{
+      name: 'Brqx Snowboard',
+      type: ActivityType.Watching
+    }],
+    status: 'online'
+  });
 });
 
 function checkBotPermissions(guild) {
@@ -107,7 +117,7 @@ client.on('messageCreate', async (message) => {
   
   const verifyEmbed = new EmbedBuilder()
     .setAuthor({ name: `${serverName} Verification`, iconURL: serverIcon })
-    .setColor("#ff5e00")
+    .setColor("#1AAD91")
     .addFields(
       { name: '**:white_small_square:Welcome!ㅤ**', value: `> **\`⭕ Hello and welcome to ${serverName}! To gain access, you must complete a simple verification to prove you’re not a bot. 🛠️\`**`, inline: false },
       { name: '**:white_small_square:How do you Verify?**', value: '> **\`⭕ Your account must be at least 24 hours old. Click the button below to complete verification. 🚀\`**', inline: false },

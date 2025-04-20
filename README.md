@@ -31,11 +31,10 @@ npm install
 ### 3️⃣ Set Up Your Bot Token
 1. Create a bot on the Discord Developer Portal
 2. Copy your **bot token**
-3. Replace the `BOT_TOKEN` variable in your `.env` with your bot token.
+3. Replace the `BOT_TOKEN` variable in `verify.js` with your bot token
 ### 4️⃣ Set Your Verified Role
 1. Find the **Role ID** of the role you want to assign upon verification
-2. Replace `VERIFIED_ROLE_ID` in `.env` with your desired role ID
-3. Replace `LOG_CHANNEL_ID` in `.env  ` with your desired channel ID (Optional)
+2. Replace `VERIFIED_ROLE_ID` in `verify.js` with your desired role ID
 ### 5️⃣ Run the Bot
 ```sh
 node verify.js
@@ -81,15 +80,15 @@ For better security, use environment variables instead of hardcoding sensitive i
 ```
 BOT_TOKEN=your_bot_token_here
 VERIFIED_ROLE_ID=your_verified_role_id_here
-LOG_CHANNEL_ID=log_channel_id
+LOG_CHANNEL_ID=your_log_channel_id_here
 ```
 
 2. Update your `verify.js` to use these environment variables:
 ```javascript
-// Add this near the top of your file
 require('dotenv').config();
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const VERIFIED_ROLE_ID = process.env.VERIFIED_ROLE_ID;
+const LOG_CHANNEL_ID = process.env.LOG_CHANNEL_ID;
 ```
 
 3. Add `dotenv` to your dependencies:

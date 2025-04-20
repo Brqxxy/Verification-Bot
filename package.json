@@ -1,5 +1,5 @@
 {
-  "name": "verification-bot",
+  "name": "brqxxy-verification-bot",
   "version": "1.1.0",
   "description": "A Discord bot for secure user verification with role assignment.",
   "main": "verify.js",

@@ -1,13 +1,14 @@
-const { 
-  Client, 
-  GatewayIntentBits, 
-  EmbedBuilder, 
-  ActionRowBuilder, 
-  ButtonBuilder, 
-  ButtonStyle, 
+const {
+  Client,
+  GatewayIntentBits,
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   PermissionsBitField,
   AuditLogEvent,
-  ActivityType
+  ActivityType,
+  MessageFlags
 } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
@@ -18,7 +19,13 @@ const VERIFIED_ROLE_ID = process.env.VERIFIED_ROLE_ID;
 const LOG_CHANNEL_ID = process.env.LOG_CHANNEL_ID;
 const COMMAND = '!setupverify';
 const VERIFICATION_COOLDOWN = 60000;
-const MIN_ACCOUNT_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
+const MIN_ACCOUNT_AGE = 7 * 24 * 60 * 60 * 1000;
+const UNVERIFIED_KICK_DELAY = 10 * 60 * 1000;
+
+const blacklistedIDs = [
+  "123456789012345678",
+  "987654321098765432"
+];
 
 const verificationAttempts = new Map();
 const verifiedUsers = new Map();
@@ -52,16 +59,16 @@ const client = new Client({
 
 async function logAction(guild, message, color = "#1AAD91") {
   if (!LOG_CHANNEL_ID) return;
-  
+
   const logChannel = guild.channels.cache.get(LOG_CHANNEL_ID);
   if (!logChannel) return;
-  
+
   const logEmbed = new EmbedBuilder()
     .setColor(color)
     .setTitle("Verification System Log")
     .setDescription(message)
     .setTimestamp();
-  
+
   await logChannel.send({ embeds: [logEmbed] }).catch(console.error);
 }
 
@@ -77,22 +84,38 @@ client.once('ready', () => {
   });
 });
 
+client.on('guildMemberAdd', member => {
+  if (member.user.bot || member.roles.cache.has(VERIFIED_ROLE_ID)) return;
+
+  setTimeout(async () => {
+    try {
+      const refreshed = await member.guild.members.fetch(member.id);
+      if (!refreshed.roles.cache.has(VERIFIED_ROLE_ID)) {
+        await refreshed.kick("Did not verify within time limit");
+        await logAction(member.guild, `⏳ ${refreshed.user.tag} (${refreshed.id}) was kicked for not verifying in time.`, "#FFA500");
+      }
+    } catch (err) {
+      console.error(`Kick check failed for ${member.user.tag}:`, err);
+    }
+  }, UNVERIFIED_KICK_DELAY);
+});
+
 function checkBotPermissions(guild) {
   const me = guild.members.cache.get(client.user.id);
-  
+
   if (!me.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
     return "I don't have permission to manage roles";
   }
-  
+
   const role = guild.roles.cache.get(VERIFIED_ROLE_ID);
   if (!role) {
     return "The verification role doesn't exist";
   }
-  
+
   if (me.roles.highest.position <= role.position) {
     return "My role is not higher than the verified role in the hierarchy";
   }
-  
+
   return null;
 }
 
@@ -101,11 +124,11 @@ let globalCooldownActive = false;
 client.on('messageCreate', async (message) => {
   if (!message.content.startsWith(COMMAND)) return;
   if (!message.guild) return;
-  
+
   if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
     return message.reply('You need administrator permissions to use this command.');
   }
-  
+
   const permissionIssue = checkBotPermissions(message.guild);
   if (permissionIssue) {
     return message.reply(`⚠️ ${permissionIssue}. Please fix this before setting up verification.`);
@@ -113,7 +136,7 @@ client.on('messageCreate', async (message) => {
 
   const serverName = message.guild.name;
   const serverIcon = message.guild.iconURL() || 'https://discord.com/assets/847541504914fd33810e70a0ea73177e.ico';
-  
+
   const verifyEmbed = new EmbedBuilder()
     .setAuthor({ name: `${serverName} Verification`, iconURL: serverIcon })
     .setColor("#1AAD91")
@@ -133,27 +156,27 @@ client.on('messageCreate', async (message) => {
 
   try {
     const messages = await message.channel.messages.fetch({ limit: 50 });
-    const botMessages = messages.filter(msg => 
-      msg.author.id === client.user.id && 
-      msg.embeds.length > 0 && 
+    const botMessages = messages.filter(msg =>
+      msg.author.id === client.user.id &&
+      msg.embeds.length > 0 &&
       msg.embeds[0].author?.name?.includes('Verification')
     );
-    
+
     if (botMessages.size > 0) {
       await message.channel.bulkDelete(botMessages).catch(console.error);
     }
-    
+
     const sentMessage = await message.channel.send({
       embeds: [verifyEmbed],
       components: [buttons]
     });
-    
+
     await logAction(message.guild, `Verification system was set up by ${message.author.tag} (${message.author.id}) in channel #${message.channel.name}`, "#00ff00");
-    
+
     await message.delete().catch(err => {
       console.error('Failed to delete command message:', err);
     });
-    
+
     return sentMessage;
   } catch (error) {
     console.error('Error setting up verification:', error);
@@ -171,21 +194,21 @@ client.on('interactionCreate', async (interaction) => {
     if (member.roles.cache.some(role => blockedRoles.includes(role.name))) {
       return interaction.reply({
         content: '⚠️ You already have elevated access — verification is not required.',
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
     if (member.roles.cache.has(VERIFIED_ROLE_ID)) {
       return interaction.reply({
         content: '✅ You are already verified!',
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
     if (globalCooldownActive) {
       return interaction.reply({
         content: '🕒 Please wait a few seconds before trying again. The verification system is cooling down globally.',
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
@@ -195,7 +218,7 @@ client.on('interactionCreate', async (interaction) => {
       const timeLeft = Math.ceil((VERIFICATION_COOLDOWN - (now - lastAttempt)) / 1000);
       return interaction.reply({
         content: `⏱️ Please wait ${timeLeft} seconds before trying to verify again.`,
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
@@ -206,6 +229,14 @@ client.on('interactionCreate', async (interaction) => {
 
     verificationAttempts.set(user.id, now);
 
+    if (blacklistedIDs.includes(user.id)) {
+      await logAction(guild, `❌ Blocked blacklisted user ${user.tag} (${user.id}) from verifying.`, "#ff0000");
+      return interaction.reply({
+        content: '🚫 You are blacklisted from verifying on this server.',
+        flags: MessageFlags.Ephemeral
+      });
+    }
+
     const accountAge = now - user.createdTimestamp;
     if (accountAge < MIN_ACCOUNT_AGE) {
       const msLeft = MIN_ACCOUNT_AGE - accountAge;
@@ -214,7 +245,7 @@ client.on('interactionCreate', async (interaction) => {
 
       return interaction.reply({
         content: `❌ Your account is too new. Please wait approximately ${daysLeft} day(s) and ${hoursLeft} hour(s) before trying again.`,
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
@@ -223,7 +254,7 @@ client.on('interactionCreate', async (interaction) => {
       await logAction(guild, `Failed to verify ${user.tag} (${user.id}): ${permissionIssue}`, "#ff0000");
       return interaction.reply({
         content: `❌ Verification failed due to a system error: ${permissionIssue}. Please contact an administrator.`,
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
@@ -235,7 +266,7 @@ client.on('interactionCreate', async (interaction) => {
 
     return interaction.reply({
       content: `✅ You have been successfully verified! Welcome to ${guild.name}.`,
-      ephemeral: true
+      flags: MessageFlags.Ephemeral
     });
   } catch (error) {
     console.error('Error during verification:', error);
@@ -243,7 +274,7 @@ client.on('interactionCreate', async (interaction) => {
 
     return interaction.reply({
       content: '❌ There was an error while verifying you. Please contact an administrator.',
-      ephemeral: true
+      flags: MessageFlags.Ephemeral
     });
   }
 });
@@ -260,5 +291,3 @@ client.login(BOT_TOKEN).catch(error => {
   console.error('Failed to login:', error);
   process.exit(1);
 });
-
-// Made by, Brqx enjoy!🚀

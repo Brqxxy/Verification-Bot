@@ -8,7 +8,9 @@ Welcome to Brqxxys Discord Verification Bot, your go-to bot for ensuring that on
 - **🕒 Cooldown**: Prevents spamming by enforcing a cooldown period between verification attempts.
 - **🔧 Easy Setup**: Just use the `!setupverify` command to configure the verification system.
 - **📚 Log Actions**: All actions (such as verification success or failure) are logged to a specific channel for easy tracking.
+
 ---
+
 ## 🔐 **Security Features**
 - **🚫 Blocked Roles**: Users with elevated roles (Admin, Moderator, Staff) are automatically excluded from verification, preventing abuse.
 - **⚠️ Account Age Check**: Users must have an account that is at least 7 days old to be verified. This helps prevent bots from joining.

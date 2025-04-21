@@ -165,4 +165,4 @@ docker-compose logs
 ## 🛠 Troubleshooting
 * **Bot is not responding?** Check if it has the right permissions to send messages and manage roles
 * **Bot is crashing?** Make sure your `BOT_TOKEN` and `VERIFIED_ROLE_ID` are set correctly
-* **These role names must match exactly:** `const blockedRoles = ['Admin', 'Moderator', 'Staff'];` **If your roles are named differently, just change those**
+* **These role names must match exactly!:** `const blockedRoles = ['Admin', 'Moderator', 'Staff'];` If your roles are named differently, just change those

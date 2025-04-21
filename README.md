@@ -9,13 +9,15 @@ Welcome to Brqxxys Discord Verification Bot, your go-to bot for ensuring that on
 - **🔧 Easy Setup**: Just use the `!setupverify` command to configure the verification system.
 - **📚 Log Actions**: All actions (such as verification success or failure) are logged to a specific channel for easy tracking.
 
+---
+
 - **🔒 Security Features**:
-- **🚫 Blocked Roles**: Users with elevated roles (Admin, Moderator, Staff) are automatically excluded from verification, preventing abuse.
-- **⚠️ Account Age Check**: Users must have an account that is at least 7 days old to be verified. This helps prevent bots from joining.
-- **🔄 Global Cooldown**: Limits spam and ensures the system is not overwhelmed by too many requests at once.
-- **🔑 Role Hierarchy Check**: Ensures the bot’s role is higher than the "verified" role, preventing permission issues.
-- **🛑 Blacklisted Users**: Users can be blacklisted based on their User IDs. Any blacklisted users will be prevented from verifying on your server.
-- **⏳ Kick Unverified Users**: Users who do not verify within a specified timeout period (10 minutes) will be automatically kicked from the server, preventing unverified users from lingering.
+- *🚫 Blocked Roles*: Users with elevated roles (Admin, Moderator, Staff) are automatically excluded from verification, preventing abuse.
+- *⚠️ Account Age Check*: Users must have an account that is at least 7 days old to be verified. This helps prevent bots from joining.
+- *🔄 Global Cooldown*: Limits spam and ensures the system is not overwhelmed by too many requests at once.
+- *🔑 Role Hierarchy Check*: Ensures the bot’s role is higher than the "verified" role, preventing permission issues.
+- *🛑 Blacklisted Users*: Users can be blacklisted based on their User IDs. Any blacklisted users will be prevented from verifying on your server.
+- *⏳ Kick Unverified Users*: Users who do not verify within a specified timeout period (10 minutes) will be automatically kicked from the server, preventing unverified users from lingering.
 
 ---
 

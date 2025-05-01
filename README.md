@@ -6,12 +6,13 @@ Welcome to Brqxxys Discord Verification Bot, your go-to bot for ensuring that on
 - **🔐 Secure Verification**: New members are required to verify by clicking a button. Verification is only allowed for accounts that are at least **7 days old**.
 - **✅ Automated Role Assignment**: Once verified, the bot automatically assigns a **verified role** to the user.
 - **🕒 Cooldown**: Prevents spamming by enforcing a cooldown period between verification attempts.
-- **🔧 Easy Setup**: Just use the `!setupverify` command to configure the verification system.
+- **🔧 Easy Setup**: Just use the `/setupverify` slash command to configure the verification system.
 - **📚 Log Actions**: All actions (such as verification success or failure) are logged to a specific channel for easy tracking.
 - **🚫 Blocked Roles**: Users with elevated roles (Admin, Moderator, Staff) are automatically excluded from verification, preventing abuse.
 - **⚠️ Account Age Check**: Users must have an account that is at least 7 days old to be verified. This helps prevent bots from joining.
+- **📱 Optional Phone Verification**: You can choose to enable Discord Phone verification for additional security.
 - **🔄 Global Cooldown**: Limits spam and ensures the system is not overwhelmed by too many requests at once.
-- **🔑 Role Hierarchy Check**: Ensures the bot’s role is higher than the "verified" role, preventing permission issues.
+- **🔑 Role Hierarchy Check**: Ensures the bot's role is higher than the "verified" role, preventing permission issues.
 - **🛑 Blacklisted Users**: Users can be blacklisted based on their User IDs. Any blacklisted users will be prevented from verifying on your server.
 - **⏳ Kick Unverified Users**: Users who do not verify within a specified timeout period (10 minutes) will be automatically kicked from the server, preventing unverified users from lingering.
 
@@ -35,13 +36,21 @@ npm install
 ```
 ### 3️⃣ Set Up Your Bot Token
 1. Create a bot on the Discord Developer Portal
-2. Copy your **bot token**
+2. Copy your **bot token** and **application ID**
 3. Create a **.env** file (this will NOT be included)
-4. Replace the `BOT_TOKEN` variable in your `.env` with your bot token
+4. Add your bot token and application ID to the `.env` file:
+```
+BOT_TOKEN=your_bot_token_here
+CLIENT_ID=your_application_id_here
+VERIFIED_ROLE_ID=your_verified_role_id_here
+LOG_CHANNEL_ID=your_log_channel_id_here
+```
+
 ### 4️⃣ Set Your Verified Role
 1. Find the Role ID of the role you want to assign upon verification
 2. Replace `VERIFIED_ROLE_ID` in `.env` with your desired role ID
 3. Replace `LOG_CHANNEL_ID` in `.env` with your desired channel ID (Optional).
+
 ### 5️⃣ Run the Bot
 ```sh
 node verify.js
@@ -86,6 +95,7 @@ For better security, use environment variables instead of hardcoding sensitive i
 1. Create a `.env` file (this will NOT be included in the Docker image):
 ```
 BOT_TOKEN=your_bot_token_here
+CLIENT_ID=your_application_id_here
 VERIFIED_ROLE_ID=your_verified_role_id_here
 LOG_CHANNEL_ID=your_log_channel_id_here
 ```
@@ -94,6 +104,7 @@ LOG_CHANNEL_ID=your_log_channel_id_here
 ```javascript
 require('dotenv').config();
 const BOT_TOKEN = process.env.BOT_TOKEN;
+const CLIENT_ID = process.env.CLIENT_ID;
 const VERIFIED_ROLE_ID = process.env.VERIFIED_ROLE_ID;
 const LOG_CHANNEL_ID = process.env.LOG_CHANNEL_ID;
 ```
@@ -156,14 +167,30 @@ docker-compose logs
 ## 🔧 Commands
 | Command | Description |
 |---------|-------------|
-| `!setupverify` | Sends the verification embed and button (Admin-only) |
+| `/setupverify` | Sends the verification embed and button (Admin-only) |
+
 ## 🤝 Contributing
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/new-feature`)
 3. Commit your changes (`git commit -m 'Add new feature'`)
 4. Push to the branch (`git push origin feature/new-feature`)
 5. Create a new Pull Request
+
+## 📱 Phone Verification
+The bot has an optional Discord Phone verification feature that adds an extra layer of security:
+
+1. **Enable in Discord Server**: Turn on Phone verification in your Discord server settings
+2. **Configuration in Code**: 
+   - By default, the feature is enabled
+   - To disable it, find and comment out or remove lines 189-191 in the code:
+   ```javascript
+   // Comment out these lines to disable phone verification
+   if (!member.user.phoneVerified) {
+     return interaction.reply({ content: "You need to verify your phone number with Discord to use this server!", ephemeral: true });
+   }
+   ```
+
 ## 🛠 Troubleshooting
 * **Bot is not responding?** Check if it has the right permissions to send messages and manage roles
-* **Bot is crashing?** Make sure your `BOT_TOKEN` and `VERIFIED_ROLE_ID` are set correctly
+* **Bot is crashing?** Make sure your `BOT_TOKEN`, `CLIENT_ID`, and `VERIFIED_ROLE_ID` are set correctly
 * **These role names must match exactly!:** `const blockedRoles = ['Admin', 'Moderator', 'Staff'];` If your roles are named differently, just change those

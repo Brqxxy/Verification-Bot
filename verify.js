@@ -324,8 +324,6 @@ client.on('interactionCreate', async (interaction) => {
 
       await logAction(guild, `User ${user.tag} (${user.id}) was successfully verified`, "#00ff00");
 
-      // REMOVED: Public confirmation message
-      // Only send the ephemeral message to the user
       return interaction.followUp({
         content: `✅ You have been successfully verified! Welcome to ${guild.name}.`,
         flags: MessageFlags.Ephemeral

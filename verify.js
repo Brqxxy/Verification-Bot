@@ -19,7 +19,7 @@ require('dotenv').config();
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const VERIFIED_ROLE_ID = process.env.VERIFIED_ROLE_ID;
 const LOG_CHANNEL_ID = process.env.LOG_CHANNEL_ID;
-const CLIENT_ID = process.env.CLIENT_ID; // Add this to your .env file
+const CLIENT_ID = process.env.CLIENT_ID;
 const VERIFICATION_COOLDOWN = 60000;
 const MIN_ACCOUNT_AGE = 7 * 24 * 60 * 60 * 1000;
 const UNVERIFIED_KICK_DELAY = 10 * 60 * 1000;

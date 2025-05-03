@@ -59,7 +59,7 @@ const client = new Client({
   ]
 });
 
-// Define slash commands
+
 const commands = [
   new SlashCommandBuilder()
     .setName('setupverify')
@@ -67,7 +67,7 @@ const commands = [
     .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
 ];
 
-// Register slash commands
+
 const rest = new REST({ version: '10' }).setToken(BOT_TOKEN);
 
 async function registerCommands() {
@@ -111,7 +111,7 @@ client.once('ready', () => {
     status: 'online'
   });
 
-  // Register slash commands when bot comes online
+
   registerCommands();
 });
 
@@ -152,9 +152,9 @@ function checkBotPermissions(guild) {
 
 let globalCooldownActive = false;
 
-// Handle slash commands
+
 client.on('interactionCreate', async (interaction) => {
-  // Handle setupverify slash command
+
   if (interaction.isChatInputCommand() && interaction.commandName === 'setupverify') {
     const { guild, channel, member } = interaction;
 
@@ -242,7 +242,7 @@ client.on('interactionCreate', async (interaction) => {
     }
   }
 
-  // Handle verify button click
+ 
   if (interaction.isButton() && interaction.customId === 'verify') {
     const { user, guild, member, channel } = interaction;
 
@@ -315,7 +315,7 @@ client.on('interactionCreate', async (interaction) => {
         });
       }
 
-      // Defer the reply first to prevent timeout
+      
       await interaction.deferReply({ ephemeral: true });
 
       await member.roles.add(VERIFIED_ROLE_ID);
@@ -332,7 +332,7 @@ client.on('interactionCreate', async (interaction) => {
       console.error('Error during verification:', error);
       await logAction(guild, `Error verifying ${user.tag} (${user.id}): ${error.message}`, "#ff0000");
 
-      // If we've already deferred the reply
+      
       if (interaction.deferred) {
         return interaction.followUp({
           content: '❌ There was an error while verifying you. Please contact an administrator.',
@@ -360,3 +360,5 @@ client.login(BOT_TOKEN).catch(error => {
   console.error('Failed to login:', error);
   process.exit(1);
 });
+
+//Made by Brqx, enjoy! 🚀

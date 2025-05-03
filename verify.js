@@ -324,12 +324,8 @@ client.on('interactionCreate', async (interaction) => {
 
       await logAction(guild, `User ${user.tag} (${user.id}) was successfully verified`, "#00ff00");
 
-      // Send public confirmation message in the channel
-      await channel.send({
-        content: `✅ ${user.tag} has been successfully verified! Welcome to ${guild.name}.`
-      });
-
-      // Send private confirmation to the user
+      // REMOVED: Public confirmation message
+      // Only send the ephemeral message to the user
       return interaction.followUp({
         content: `✅ You have been successfully verified! Welcome to ${guild.name}.`,
         flags: MessageFlags.Ephemeral

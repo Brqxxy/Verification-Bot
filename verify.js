@@ -7,7 +7,6 @@ const {
   ButtonStyle,
   PermissionsBitField,
   ActivityType,
-  MessageFlags,
   REST,
   Routes,
   SlashCommandBuilder
@@ -85,7 +84,7 @@ async function registerCommands() {
   }
 }
 
-async function logAction(guild, message, color = "#1AAD91") {
+async function logAction(guild, message, color = "#1AAD91", user = null) {
   if (!LOG_CHANNEL_ID) return;
 
   const logChannel = guild.channels.cache.get(LOG_CHANNEL_ID);
@@ -96,6 +95,11 @@ async function logAction(guild, message, color = "#1AAD91") {
     .setTitle("Verification System Log")
     .setDescription(message)
     .setTimestamp();
+  
+
+  if (user) {
+    logEmbed.setThumbnail(user.displayAvatarURL({ dynamic: true, size: 128 }));
+  }
 
   await logChannel.send({ embeds: [logEmbed] }).catch(console.error);
 }
@@ -123,7 +127,7 @@ client.on('guildMemberAdd', member => {
       const refreshed = await member.guild.members.fetch(member.id);
       if (!refreshed.roles.cache.has(VERIFIED_ROLE_ID)) {
         await refreshed.kick("Did not verify within time limit");
-        await logAction(member.guild, `⏳ ${refreshed.user.tag} (${refreshed.id}) was kicked for not verifying in time.`, "#FFA500");
+        await logAction(member.guild, `⏳ ${refreshed.user.tag} (${refreshed.id}) was kicked for not verifying in time.`, "#FFA500", refreshed.user);
       }
     } catch (err) {
       console.error(`Kick check failed for ${member.user.tag}:`, err);
@@ -161,7 +165,7 @@ client.on('interactionCreate', async (interaction) => {
     if (!member.permissions.has(PermissionsBitField.Flags.Administrator)) {
       return interaction.reply({
         content: 'You need administrator permissions to use this command.',
-        flags: MessageFlags.Ephemeral
+        flags: 64
       });
     }
 
@@ -169,7 +173,7 @@ client.on('interactionCreate', async (interaction) => {
     if (permissionIssue) {
       return interaction.reply({
         content: `⚠️ ${permissionIssue}. Please fix this before setting up verification.`,
-        flags: MessageFlags.Ephemeral
+        flags: 64
       });
     }
 
@@ -227,17 +231,17 @@ client.on('interactionCreate', async (interaction) => {
         components: [buttons]
       });
 
-      await logAction(guild, `Verification system was set up by ${interaction.user.tag} (${interaction.user.id}) in channel #${channel.name}`, "#00ff00");
+      await logAction(guild, `Verification system was set up by ${interaction.user.tag} (${interaction.user.id}) in channel #${channel.name}`, "#00ff00", interaction.user);
 
       return interaction.reply({
         content: 'Verification system has been successfully set up!',
-        flags: MessageFlags.Ephemeral
+        flags: 64
       });
     } catch (error) {
       console.error('Error setting up verification:', error);
       return interaction.reply({
         content: 'There was an error setting up the verification system. Please check my permissions and try again.',
-        flags: MessageFlags.Ephemeral
+        flags: 64
       });
     }
   }
@@ -251,21 +255,21 @@ client.on('interactionCreate', async (interaction) => {
       if (member.roles.cache.some(role => blockedRoles.includes(role.name))) {
         return interaction.reply({
           content: '⚠️ You already have elevated access — verification is not required.',
-          flags: MessageFlags.Ephemeral
+          flags: 64
         });
       }
 
       if (member.roles.cache.has(VERIFIED_ROLE_ID)) {
         return interaction.reply({
           content: '✅ You are already verified!',
-          flags: MessageFlags.Ephemeral
+          flags: 64
         });
       }
 
       if (globalCooldownActive) {
         return interaction.reply({
           content: '🕒 Please wait a few seconds before trying again. The verification system is cooling down globally.',
-          flags: MessageFlags.Ephemeral
+          flags: 64
         });
       }
 
@@ -275,7 +279,7 @@ client.on('interactionCreate', async (interaction) => {
         const timeLeft = Math.ceil((VERIFICATION_COOLDOWN - (now - lastAttempt)) / 1000);
         return interaction.reply({
           content: `⏱️ Please wait ${timeLeft} seconds before trying again.`,
-          flags: MessageFlags.Ephemeral
+          flags: 64
         });
       }
 
@@ -287,10 +291,10 @@ client.on('interactionCreate', async (interaction) => {
       verificationAttempts.set(user.id, now);
 
       if (blacklistedIDs.includes(user.id)) {
-        await logAction(guild, `❌ Blocked blacklisted user ${user.tag} (${user.id}) from verifying.`, "#ff0000");
+        await logAction(guild, `❌ Blocked blacklisted user ${user.tag} (${user.id}) from verifying.`, "#ff0000", user);
         return interaction.reply({
           content: '🚫 You are blacklisted from verifying on this server.',
-          flags: MessageFlags.Ephemeral
+          flags: 64
         });
       }
 
@@ -302,46 +306,46 @@ client.on('interactionCreate', async (interaction) => {
 
         return interaction.reply({
           content: `❌ Your account is too new. Please wait approximately ${daysLeft} day(s) and ${hoursLeft} hour(s) before trying again.`,
-          flags: MessageFlags.Ephemeral
+          flags: 64
         });
       }
 
       const permissionIssue = checkBotPermissions(guild);
       if (permissionIssue) {
-        await logAction(guild, `Failed to verify ${user.tag} (${user.id}): ${permissionIssue}`, "#ff0000");
+        await logAction(guild, `Failed to verify ${user.tag} (${user.id}): ${permissionIssue}`, "#ff0000", user);
         return interaction.reply({
           content: `❌ Verification failed due to a system error: ${permissionIssue}. Please contact an administrator.`,
-          flags: MessageFlags.Ephemeral
+          flags: 64
         });
       }
 
       
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: 64 });
 
       await member.roles.add(VERIFIED_ROLE_ID);
       verifiedUsers.set(user.id, now);
       saveVerifiedUsers();
 
-      await logAction(guild, `User ${user.tag} (${user.id}) was successfully verified`, "#00ff00");
+      await logAction(guild, `User ${user.tag} (${user.id}) was successfully verified`, "#00ff00", user);
 
       return interaction.followUp({
         content: `✅ You have been successfully verified! Welcome to ${guild.name}.`,
-        flags: MessageFlags.Ephemeral
+        flags: 64
       });
     } catch (error) {
       console.error('Error during verification:', error);
-      await logAction(guild, `Error verifying ${user.tag} (${user.id}): ${error.message}`, "#ff0000");
+      await logAction(guild, `Error verifying ${user.tag} (${user.id}): ${error.message}`, "#ff0000", user);
 
       
       if (interaction.deferred) {
         return interaction.followUp({
           content: '❌ There was an error while verifying you. Please contact an administrator.',
-          flags: MessageFlags.Ephemeral
+          flags: 64
         });
       } else {
         return interaction.reply({
           content: '❌ There was an error while verifying you. Please contact an administrator.',
-          flags: MessageFlags.Ephemeral
+          flags: 64
         });
       }
     }
